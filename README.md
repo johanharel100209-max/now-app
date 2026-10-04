@@ -1,21 +1,13 @@
 # NOW App
 
-Une application de type BeReal / Instagram social orientée défis photo, points et feed d'amis.
-
-## Concept
-
-- Défis quotidiens, nationaux et mondiaux
-- Photos spontanées avec thème précis
-- Système de points et classement
-- Feed d'amis, feed global, questionnaires humoristiques
-- Expérience mobile-first et très visuelle
+Une application sociale photo inspirée de BeReal, pensée pour des défis du jour, des mèmes, des défis nationaux et mondiaux, un système de points et un feed d'amis.
 
 ## Stack
 
 - Next.js
 - TypeScript
 - Tailwind CSS
-- Supabase (auth + storage + database)
+- Supabase
 
 ## Démarrage rapide
 
@@ -24,36 +16,34 @@ npm install
 npm run dev
 ```
 
-Puis ouvrez : http://localhost:3000
-
 ## Variables d'environnement
 
 Crée un fichier `.env.local` avec :
 
 ```bash
-NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
 ```
 
-## Structure du projet
+## Fonctionnalités MVP
 
-- `app/` : pages et layout
-- `components/` : composants UI
-- `lib/` : données mock et utilitaires
-
-## MVP inclus
-
-- Landing / feed principal
-- Défis du jour
-- Classement des points
-- Liste d'amis
+- Feed social style Instagram
+- Défis de l'heure
+- Système de points
+- Classement des amis
 - Profil utilisateur
-- Section challenge photo
+- Workflow de publication photo
+
+## Structure
+
+- `app/` : écrans de l'application
+- `components/` : UI réutilisable
+- `lib/` : utilitaires, données et clients Supabase
 
 ## Prochaines étapes
 
-- Intégration Supabase Auth
-- Upload de photos
+- Authentification Supabase
+- Upload d'images avec storage
 - Likes / commentaires / feed temps réel
 - Défis nationaux et mondiaux
-- Notifications push
+- Notifications et profil complet

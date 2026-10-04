@@ -1,50 +1,37 @@
 import Link from "next/link";
 import { AppShell } from "@/components/app-shell";
 
-export default function CameraPage() {
+export default function LoginPage() {
   return (
     <AppShell>
-      <div className="mx-auto max-w-4xl space-y-6">
-        <div className="flex items-center justify-between">
-          <div>
-            <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-violet-600">Défi</p>
-            <h1 className="mt-2 text-3xl font-black text-slate-900">Publier une photo</h1>
+      <div className="mx-auto max-w-md rounded-[32px] border border-slate-200 bg-white p-6 shadow-soft">
+        <div className="mb-6 text-center">
+          <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-[22px] bg-gradient-to-br from-violet-600 via-pink-500 to-orange-400 text-2xl font-black text-white">
+            N
           </div>
-          <Link href="/" className="rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50">
-            Retour au feed
-          </Link>
+          <p className="text-[11px] uppercase tracking-[0.22em] text-violet-600">NOW</p>
+          <h1 className="mt-2 text-3xl font-black text-slate-900">Connexion</h1>
         </div>
 
-        <div className="grid gap-5 lg:grid-cols-[1.2fr_0.8fr]">
-          <div className="rounded-[30px] border border-slate-200 bg-slate-950 p-4 shadow-soft">
-            <div className="flex h-[480px] items-center justify-center rounded-[24px] border border-white/10 bg-[radial-gradient(circle_at_center,_rgba(255,255,255,0.12),_rgba(15,23,42,0.8))] text-7xl">
-              📸
-            </div>
+        <div className="space-y-4">
+          <div className="rounded-2xl border border-slate-200 bg-slate-50 p-3">
+            <label className="mb-2 block text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">Email</label>
+            <input className="w-full bg-transparent text-sm text-slate-900 outline-none" placeholder="tu@now.app" />
+          </div>
+          <div className="rounded-2xl border border-slate-200 bg-slate-50 p-3">
+            <label className="mb-2 block text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">Mot de passe</label>
+            <input type="password" className="w-full bg-transparent text-sm text-slate-900 outline-none" placeholder="••••••••" />
           </div>
 
-          <div className="space-y-4 rounded-[30px] border border-slate-200 bg-white p-5 shadow-soft">
-            <div className="rounded-2xl bg-violet-50 p-4">
-              <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-violet-600">Défi du jour</p>
-              <h2 className="mt-2 text-2xl font-black text-slate-900">Quelque chose de rouge</h2>
-            </div>
+          <button className="w-full rounded-full bg-slate-900 px-4 py-3 text-sm font-bold text-white hover:bg-slate-800">
+            Se connecter
+          </button>
 
-            <div className="space-y-3">
-              <label className="block text-sm font-semibold text-slate-700">Légende</label>
-              <textarea rows={5} className="w-full rounded-2xl border border-slate-200 bg-slate-50 p-3 text-sm text-slate-800 outline-none" placeholder="Écris une légende hilarante..." />
-            </div>
-
-            <div className="grid gap-3 sm:grid-cols-2">
-              <button className="rounded-full border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-700 hover:bg-slate-50">
-                Ouvrir la galerie
-              </button>
-              <button className="rounded-full bg-violet-600 px-4 py-3 text-sm font-semibold text-white hover:bg-violet-500">
-                Publier
-              </button>
-            </div>
-          </div>
+          <Link href="/" className="block text-center text-sm font-semibold text-violet-600 hover:text-violet-700">
+            Retour au feed
+          </Link>
         </div>
       </div>
     </AppShell>
   );
 }
-
