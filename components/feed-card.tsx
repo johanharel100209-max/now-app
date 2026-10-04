@@ -1,40 +1,40 @@
-type ChallengeCardProps = {
-  title: string;
-  description: string;
+type FeedCardProps = {
+  id: number;
+  user: string;
+  handle: string;
+  location: string;
   points: number;
-  scope: string;
-  timeLeft: string;
-  emoji: string;
+  caption: string;
+  image: string;
+  likes: number;
+  comments: number;
 };
 
-export function ChallengeCard({
-  title,
-  description,
-  points,
-  scope,
-  timeLeft,
-  emoji,
-}: ChallengeCardProps) {
+export function FeedCard({ user, handle, location, points, caption, image, likes, comments }: FeedCardProps) {
   return (
-    <article className="overflow-hidden rounded-[28px] border border-slate-200 bg-white shadow-soft">
-      <div className="flex items-center justify-between bg-gradient-to-br from-violet-500 via-pink-500 to-orange-400 p-4 text-white">
-        <span className="rounded-full bg-white/15 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.16em]">
-          {scope}
-        </span>
-        <span className="text-sm font-bold">+{points} pts</span>
+    <article className="overflow-hidden rounded-[30px] border border-slate-200 bg-white shadow-soft">
+      <div className="flex items-center justify-between border-b border-slate-100 p-4">
+        <div className="flex items-center gap-3">
+          <div className="flex h-11 w-11 items-center justify-center rounded-full bg-gradient-to-br from-violet-500 to-pink-500 text-sm font-black text-white">
+            {user.slice(0, 2).toUpperCase()}
+          </div>
+          <div>
+            <p className="font-bold text-slate-900">{user}</p>
+            <p className="text-xs text-slate-500">{handle} • {location}</p>
+          </div>
+        </div>
+        <span className="rounded-full bg-violet-100 px-2.5 py-1 text-xs font-bold text-violet-700">+{points} pts</span>
       </div>
 
-      <div className="space-y-4 p-4">
-        <div className="flex items-center justify-between">
-          <h3 className="text-lg font-bold text-slate-900">{title}</h3>
-          <span className="text-2xl">{emoji}</span>
-        </div>
+      <img src={image} alt={caption} className="h-72 w-full object-cover" />
 
-        <p className="text-sm leading-6 text-slate-600">{description}</p>
+      <div className="space-y-3 p-4">
+        <p className="text-sm leading-6 text-slate-700">{caption}</p>
 
-        <div className="flex items-center justify-between rounded-2xl bg-slate-50 p-3 text-sm">
-          <span className="text-slate-500">Temps restant</span>
-          <strong className="font-bold text-slate-900">{timeLeft}</strong>
+        <div className="flex items-center justify-between text-sm text-slate-500">
+          <span>💜 {likes}</span>
+          <span>💬 {comments}</span>
+          <span>⚡ Défi validé</span>
         </div>
       </div>
     </article>

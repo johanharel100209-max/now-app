@@ -1,60 +1,87 @@
-import Link from "next/link";
-import type { ReactNode } from "react";
-
-const navItems = [
-  { label: "Accueil", href: "/" },
-  { label: "Défis", href: "/challenge" },
-  { label: "Amis", href: "/friends" },
-  { label: "Classement", href: "/leaderboard" },
-  { label: "Profil", href: "/profile" },
+export const challengeCards = [
+  {
+    title: "Quelque chose de rouge",
+    description: "Trouve un objet rouge et captures-le dans le moment le plus spontané possible.",
+    points: 120,
+    scope: "National",
+    timeLeft: "2h 13m",
+    emoji: "🔴",
+  },
+  {
+    title: "Mélange absurde",
+    description: "Prenez une photo qui mélange un objet du quotidien avec une tenue totalement improbable.",
+    points: 150,
+    scope: "Monde",
+    timeLeft: "5h 40m",
+    emoji: "🧢",
+  },
+  {
+    title: "Le meilleur mème",
+    description: "Crée un moment hilarant en photo qui ferait rire toute ta famille en 3 secondes.",
+    points: 200,
+    scope: "Amis",
+    timeLeft: "1h 10m",
+    emoji: "😂",
+  },
+  {
+    title: "Mon lieu préféré",
+    description: "Montre un endroit qui te ressemble le plus et qui raconte une histoire.",
+    points: 90,
+    scope: "Ville",
+    timeLeft: "3h 45m",
+    emoji: "📍",
+  },
 ];
 
-export function AppShell({ children }: { children: ReactNode }) {
-  return (
-    <div className="min-h-screen px-4 py-5 md:px-6 lg:px-8">
-      <div className="mx-auto max-w-7xl">
-        <header className="mb-6 rounded-[28px] border border-slate-200 bg-white/80 px-4 py-3 shadow-soft backdrop-blur-xl">
-          <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-            <div className="flex items-center justify-between gap-3">
-              <div className="flex items-center gap-3">
-                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-violet-600 via-pink-500 to-orange-400 text-lg font-black text-white">
-                  N
-                </div>
-                <div>
-                  <p className="text-[10px] uppercase tracking-[0.25em] text-slate-400">Social photo</p>
-                  <h2 className="text-xl font-black text-slate-900">NOW</h2>
-                </div>
-              </div>
-              <Link href="/camera" className="rounded-full bg-slate-900 px-3 py-2 text-sm font-semibold text-white lg:hidden">
-                + Photo
-              </Link>
-            </div>
+export const feedPosts = [
+  {
+    id: 1,
+    user: "Lina",
+    handle: "@lina.now",
+    location: "Paris",
+    points: 180,
+    caption: "Quand tu trouves le rouge parfait au bon moment. #RedAlert #NOW",
+    image:
+      "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=900&q=80",
+    likes: 1450,
+    comments: 98,
+  },
+  {
+    id: 2,
+    user: "Milo",
+    handle: "@milo_s",
+    location: "Lyon",
+    points: 210,
+    caption: "Mon café de la journée + le mème non officiel du challenge. #DailyChallenge",
+    image:
+      "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=900&q=80",
+    likes: 1980,
+    comments: 134,
+  },
+  {
+    id: 3,
+    user: "Zoé",
+    handle: "@zoephoto",
+    location: "Marseille",
+    points: 260,
+    caption: "Le plus drôle de mon cercle. Une photo qui aurai été impossible sans ce défi. #MemeChallenge",
+    image:
+      "https://images.unsplash.com/photo-1521119989659-a83eee488004?auto=format&fit=crop&w=900&q=80",
+    likes: 2770,
+    comments: 219,
+  },
+];
 
-            <nav className="flex flex-wrap items-center gap-2">
-              {navItems.map((item) => (
-                <Link
-                  key={item.label}
-                  href={item.href}
-                  className="rounded-full px-3 py-2 text-sm font-medium text-slate-600 hover:bg-slate-100 hover:text-slate-900"
-                >
-                  {item.label}
-                </Link>
-              ))}
-            </nav>
+export const leaderboard = [
+  { name: "Samira", points: 2480, badge: "Master du rouge" },
+  { name: "Jules", points: 2360, badge: "Mème king" },
+  { name: "Nina", points: 2210, badge: "Challenge queen" },
+  { name: "Theo", points: 2040, badge: "Streak 8 jours" },
+];
 
-            <div className="flex items-center gap-3">
-              <button className="rounded-full border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-100">
-                🔔 3
-              </button>
-              <Link href="/camera" className="rounded-full bg-violet-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-violet-500">
-                + Défi
-              </Link>
-            </div>
-          </div>
-        </header>
-
-        <main>{children}</main>
-      </div>
-    </div>
-  );
-}
+export const friends = [
+  { name: "Lina", badge: "Rouge", points: 1820, streak: "8 jours" },
+  { name: "Milo", badge: "Mème", points: 1740, streak: "7 jours" },
+  { name: "Zoé", badge: "Viral", points: 1920, streak: "9 jours" },
+  { name: "Rayan", badge: "Voyage", points: 1605, streak: "6 jours" },
+];

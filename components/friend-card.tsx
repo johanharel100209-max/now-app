@@ -1,42 +1,33 @@
-type FeedCardProps = {
-  id: number;
-  user: string;
-  handle: string;
-  location: string;
+type FriendCardProps = {
+  name: string;
+  badge: string;
   points: number;
-  caption: string;
-  image: string;
-  likes: number;
-  comments: number;
+  streak: string;
 };
 
-export function FeedCard({ user, handle, location, points, caption, image, likes, comments }: FeedCardProps) {
+export function FriendCard({ name, badge, points, streak }: FriendCardProps) {
   return (
-    <article className="overflow-hidden rounded-[30px] border border-slate-200 bg-white shadow-soft">
-      <div className="flex items-center justify-between border-b border-slate-100 p-4">
-        <div className="flex items-center gap-3">
-          <div className="flex h-11 w-11 items-center justify-center rounded-full bg-gradient-to-br from-violet-500 to-pink-500 text-sm font-black text-white">
-            {user.slice(0, 2).toUpperCase()}
-          </div>
-          <div>
-            <p className="font-bold text-slate-900">{user}</p>
-            <p className="text-xs text-slate-500">{handle} • {location}</p>
-          </div>
+    <div className="rounded-[24px] border border-slate-200 bg-slate-50 p-4">
+      <div className="flex items-center justify-between">
+        <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-violet-500 to-pink-500 text-sm font-bold text-white">
+          {name.slice(0, 2).toUpperCase()}
         </div>
-        <span className="rounded-full bg-violet-100 px-2.5 py-1 text-xs font-bold text-violet-700">+{points} pts</span>
+        <span className="rounded-full bg-white px-2 py-1 text-[10px] font-bold uppercase tracking-[0.15em] text-violet-700">
+          {badge}
+        </span>
       </div>
 
-      <img src={image} alt={caption} className="h-72 w-full object-cover" />
-
-      <div className="space-y-3 p-4">
-        <p className="text-sm leading-6 text-slate-700">{caption}</p>
-
-        <div className="flex items-center justify-between text-sm text-slate-500">
-          <span>💜 {likes}</span>
-          <span>💬 {comments}</span>
-          <span>⚡ Défi validé</span>
+      <h3 className="mt-4 font-bold text-slate-900">{name}</h3>
+      <div className="mt-3 space-y-2 text-sm text-slate-600">
+        <div className="flex items-center justify-between">
+          <span>Points</span>
+          <strong className="font-bold text-slate-900">{points}</strong>
+        </div>
+        <div className="flex items-center justify-between">
+          <span>Streak</span>
+          <strong className="font-bold text-slate-900">{streak}</strong>
         </div>
       </div>
-    </article>
+    </div>
   );
 }

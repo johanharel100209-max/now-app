@@ -1,33 +1,20 @@
-type FriendCardProps = {
-  name: string;
-  badge: string;
-  points: number;
-  streak: string;
+type StatPillProps = {
+  label: string;
+  value: string;
+  accent: "violet" | "coral" | "emerald";
 };
 
-export function FriendCard({ name, badge, points, streak }: FriendCardProps) {
-  return (
-    <div className="rounded-[24px] border border-slate-200 bg-slate-50 p-4">
-      <div className="flex items-center justify-between">
-        <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-violet-500 to-pink-500 text-sm font-bold text-white">
-          {name.slice(0, 2).toUpperCase()}
-        </div>
-        <span className="rounded-full bg-white px-2 py-1 text-[10px] font-bold uppercase tracking-[0.15em] text-violet-700">
-          {badge}
-        </span>
-      </div>
+const accentMap = {
+  violet: "bg-violet-500/20 text-violet-100 border-violet-300/20",
+  coral: "bg-rose-500/20 text-rose-100 border-rose-300/20",
+  emerald: "bg-emerald-500/20 text-emerald-100 border-emerald-300/20",
+};
 
-      <h3 className="mt-4 font-bold text-slate-900">{name}</h3>
-      <div className="mt-3 space-y-2 text-sm text-slate-600">
-        <div className="flex items-center justify-between">
-          <span>Points</span>
-          <strong className="font-bold text-slate-900">{points}</strong>
-        </div>
-        <div className="flex items-center justify-between">
-          <span>Streak</span>
-          <strong className="font-bold text-slate-900">{streak}</strong>
-        </div>
-      </div>
+export function StatPill({ label, value, accent }: StatPillProps) {
+  return (
+    <div className={`rounded-2xl border p-3 ${accentMap[accent]}`}>
+      <p className="text-[10px] uppercase tracking-[0.2em] text-white/75">{label}</p>
+      <p className="mt-2 text-2xl font-black text-white">{value}</p>
     </div>
   );
 }

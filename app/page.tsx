@@ -1,3 +1,5 @@
+'use client';
+
 import Link from "next/link";
 import { AppShell } from "@/components/app-shell";
 import { ChallengeCard } from "@/components/challenge-card";
@@ -36,7 +38,7 @@ export default function HomePage() {
               </div>
             </div>
 
-            <div className="grid w-full max-w-lg gap-3 sm:grid-cols-3 xl:grid-cols-3">
+            <div className="grid w-full max-w-lg gap-3 sm:grid-cols-3">
               <StatPill label="Points" value="2,480" accent="violet" />
               <StatPill label="Défis" value="18" accent="coral" />
               <StatPill label="Streak" value="9 jours" accent="emerald" />
@@ -152,4 +154,3 @@ export default function HomePage() {
     </AppShell>
   );
 }
-
