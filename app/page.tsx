@@ -1,25 +1,155 @@
-# NOW App
+import Link from "next/link";
+import { AppShell } from "@/components/app-shell";
+import { ChallengeCard } from "@/components/challenge-card";
+import { FeedCard } from "@/components/feed-card";
+import { FriendCard } from "@/components/friend-card";
+import { StatPill } from "@/components/stat-pill";
+import { challengeCards, feedPosts, friends, leaderboard } from "@/lib/mock-data";
 
-Une application sociale photo inspirée de BeReal, pensée pour des défis du jour, des mèmes, des défis nationaux et mondiaux, un système de points et un feed d'amis à l'esthétique Ultra modern.
+export default function HomePage() {
+  return (
+    <AppShell>
+      <div className="space-y-8 pb-10">
+        <section className="rounded-[34px] border border-violet-500/20 bg-slate-950 p-5 text-white shadow-[0_25px_60px_rgba(76,29,149,0.35)] md:p-8">
+          <div className="flex flex-col gap-6 xl:flex-row xl:items-center xl:justify-between">
+            <div className="max-w-xl space-y-5">
+              <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.22em] text-violet-100">
+                <span className="h-2 w-2 rounded-full bg-emerald-400" />
+                Défi du jour actif
+              </div>
 
-## Stack
+              <h1 className="text-4xl font-black leading-[1.05] tracking-[-0.06em] md:text-5xl xl:text-6xl">
+                Prends une photo. Gagne des points. <span className="text-violet-300">Fais rire le monde.</span>
+              </h1>
 
-- Next.js
-- TypeScript
-- Tailwind CSS
+              <p className="max-w-lg text-sm text-slate-300 md:text-base">
+                NOW est une app sociale photo inspirée de BeReal pour des défis drôles, spontanés et ultra visuels. Publie, vote, rivalise et deviens le roi du moment.
+              </p>
 
-## Points forts
+              <div className="flex flex-wrap gap-3">
+                <Link href="/camera" className="rounded-full bg-white px-5 py-3 text-sm font-bold text-slate-900 hover:bg-violet-50">
+                  + Publier ma photo
+                </Link>
+                <Link href="/challenge" className="rounded-full border border-white/15 bg-white/5 px-5 py-3 text-sm font-bold text-white hover:bg-white/10">
+                  Voir les défis
+                </Link>
+              </div>
+            </div>
 
-- Feed social style Instagram
-- Défis de l'heure
-- Système de points
-- Classement des amis
-- Photos dans un style spontane / drôle / viral
-- Design mobile-first
+            <div className="grid w-full max-w-lg gap-3 sm:grid-cols-3 xl:grid-cols-3">
+              <StatPill label="Points" value="2,480" accent="violet" />
+              <StatPill label="Défis" value="18" accent="coral" />
+              <StatPill label="Streak" value="9 jours" accent="emerald" />
+            </div>
+          </div>
+        </section>
 
-## Scripts
+        <section className="space-y-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-violet-600">Story</p>
+              <h2 className="mt-2 text-2xl font-black text-slate-900">À l’instant</h2>
+            </div>
+            <Link href="/friends" className="text-sm font-semibold text-violet-600 hover:text-violet-700">
+              Voir mes amis
+            </Link>
+          </div>
 
-```bash
-npm install
-npm run dev
-```
+          <div className="flex gap-3 overflow-x-auto pb-2">
+            {[
+              { name: "Toi", tone: "from-violet-500 to-pink-500" },
+              { name: "Lina", tone: "from-amber-400 to-orange-500" },
+              { name: "Milo", tone: "from-cyan-500 to-blue-500" },
+              { name: "Zoé", tone: "from-emerald-400 to-teal-500" },
+              { name: "Rayan", tone: "from-fuchsia-500 to-pink-500" },
+              { name: "Nina", tone: "from-rose-500 to-red-500" },
+            ].map((friend) => (
+              <div key={friend.name} className="min-w-[88px] text-center">
+                <div className={`mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-gradient-to-br ${friend.tone} p-[2px]`}>
+                  <div className="flex h-full w-full items-center justify-center rounded-full bg-slate-950 text-lg font-black text-white">
+                    {friend.name === "Toi" ? "TO" : friend.name.slice(0, 2).toUpperCase()}
+                  </div>
+                </div>
+                <p className="mt-2 text-xs font-medium text-slate-600">{friend.name}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <section className="grid gap-4 xl:grid-cols-[1.3fr_0.7fr]">
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <h2 className="text-2xl font-black text-slate-900">Défis du jour</h2>
+              <Link href="/challenge" className="text-sm font-semibold text-violet-600 hover:text-violet-700">
+                Voir tout
+              </Link>
+            </div>
+            <div className="grid gap-4 md:grid-cols-2">
+              {challengeCards.map((challenge) => (
+                <ChallengeCard key={challenge.title} {...challenge} />
+              ))}
+            </div>
+          </div>
+
+          <aside className="rounded-[28px] border border-slate-200 bg-white p-4 shadow-soft">
+            <div className="mb-4 flex items-center justify-between">
+              <h3 className="text-xl font-black text-slate-900">Classement</h3>
+              <Link href="/leaderboard" className="text-sm font-semibold text-violet-600 hover:text-violet-700">
+                Voir
+              </Link>
+            </div>
+            <div className="space-y-3">
+              {leaderboard.map((item, index) => (
+                <div key={item.name} className="flex items-center justify-between rounded-2xl bg-slate-50 p-3">
+                  <div className="flex items-center gap-3">
+                    <div className="flex h-9 w-9 items-center justify-center rounded-full bg-slate-900 text-[10px] font-black text-white">
+                      #{index + 1}
+                    </div>
+                    <div>
+                      <p className="font-bold text-slate-900">{item.name}</p>
+                      <p className="text-[10px] uppercase tracking-[0.18em] text-slate-400">{item.badge}</p>
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <p className="font-black text-slate-900">{item.points}</p>
+                    <p className="text-[10px] uppercase tracking-[0.18em] text-slate-400">pts</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </aside>
+        </section>
+
+        <section className="space-y-4">
+          <div className="flex items-center justify-between">
+            <h2 className="text-2xl font-black text-slate-900">Feed de tes amis</h2>
+            <button className="rounded-full border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50">
+              Derniers uploads
+            </button>
+          </div>
+
+          <div className="grid gap-5 lg:grid-cols-3">
+            {feedPosts.map((post) => (
+              <FeedCard key={post.id} {...post} />
+            ))}
+          </div>
+        </section>
+
+        <section className="space-y-4 rounded-[28px] border border-slate-200 bg-white p-4 shadow-soft">
+          <div className="flex items-center justify-between">
+            <h2 className="text-2xl font-black text-slate-900">Tes amis</h2>
+            <Link href="/friends" className="text-sm font-semibold text-violet-600 hover:text-violet-700">
+              Tout voir
+            </Link>
+          </div>
+          <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+            {friends.map((friend) => (
+              <FriendCard key={friend.name} {...friend} />
+            ))}
+          </div>
+        </section>
+      </div>
+    </AppShell>
+  );
+}
+
