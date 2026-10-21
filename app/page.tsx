@@ -1,5 +1,6 @@
 'use client';
 
+import { useState } from "react";
 import Link from "next/link";
 import { AppShell } from "@/components/app-shell";
 import { ChallengeCard } from "@/components/challenge-card";
@@ -8,7 +9,99 @@ import { FriendCard } from "@/components/friend-card";
 import { StatPill } from "@/components/stat-pill";
 import { challengeCards, feedPosts, friends, leaderboard } from "@/lib/mock-data";
 
+const categories = [
+  { id: "points", label: "Points", icon: "⚡", accent: "from-violet-500 to-fuchsia-500" },
+  { id: "challenge", label: "Challenge", icon: "🏆", accent: "from-amber-400 to-orange-500" },
+  { id: "discussion", label: "Discussion", icon: "💬", accent: "from-cyan-500 to-blue-500" },
+  { id: "amis", label: "Défis amis", icon: "👥", accent: "from-emerald-400 to-teal-500" },
+  { id: "publie", label: "Publie", icon: "📸", accent: "from-pink-500 to-rose-500" },
+];
+
+const discussionThreads = [
+  { user: "Lina", text: "Le défi rouge est trop fun ce matin 😂", time: "2 min" },
+  { user: "Milo", text: "J’ai trouvé la meilleure pose pour le challenge #Meme", time: "9 min" },
+  { user: "Zoé", text: "Votez pour ma photo du jour avant 18h !", time: "18 min" },
+  { user: "Rayan", text: "Qui a le meilleur concept du moment ?", time: "31 min" },
+];
+
 export default function HomePage() {
+  const [activeCategory, setActiveCategory] = useState("points");
+
+  const renderCategoryContent = () => {
+    switch (activeCategory) {
+      case "points":
+        return (
+          <div className="grid gap-4 md:grid-cols-3">
+            <div className="rounded-[24px] bg-slate-900 p-4 text-white">
+              <p className="text-[10px] uppercase tracking-[0.22em] text-violet-200">Score total</p>
+              <p className="mt-3 text-3xl font-black">2 480</p>
+              <p className="mt-2 text-sm text-slate-300">+180 aujourd’hui</p>
+            </div>
+            <div className="rounded-[24px] border border-slate-200 bg-white p-4">
+              <p className="text-[10px] uppercase tracking-[0.22em] text-slate-400">Badge</p>
+              <p className="mt-3 text-2xl font-black text-slate-900">Master rouge</p>
+              <p className="mt-2 text-sm text-slate-500">10 badges actifs</p>
+            </div>
+            <div className="rounded-[24px] bg-gradient-to-br from-violet-500 via-pink-500 to-orange-400 p-[1px]">
+              <div className="h-full rounded-[23px] bg-slate-950/90 p-4 text-white">
+                <p className="text-[10px] uppercase tracking-[0.22em] text-violet-200">Streak</p>
+                <p className="mt-3 text-3xl font-black">9 jours</p>
+                <p className="mt-2 text-sm text-slate-300">Tu es dans le top 5</p>
+              </div>
+            </div>
+          </div>
+        );
+      case "challenge":
+        return (
+          <div className="grid gap-4 md:grid-cols-2">
+            {challengeCards.map((challenge) => (
+              <ChallengeCard key={challenge.title} {...challenge} />
+            ))}
+          </div>
+        );
+      case "discussion":
+        return (
+          <div className="space-y-3">
+            {discussionThreads.map((thread) => (
+              <div key={thread.user} className="flex items-center justify-between rounded-[20px] border border-slate-200 bg-white p-3">
+                <div className="flex items-center gap-3">
+                  <div className="flex h-11 w-11 items-center justify-center rounded-full bg-gradient-to-br from-violet-500 to-pink-500 font-black text-white">
+                    {thread.user.slice(0, 2).toUpperCase()}
+                  </div>
+                  <div>
+                    <p className="font-bold text-slate-900">{thread.user}</p>
+                    <p className="text-sm text-slate-600">{thread.text}</p>
+                  </div>
+                </div>
+                <span className="text-xs font-medium text-slate-400">{thread.time}</span>
+              </div>
+            ))}
+          </div>
+        );
+      case "amis":
+        return (
+          <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+            {friends.map((friend) => (
+              <FriendCard key={friend.name} {...friend} />
+            ))}
+          </div>
+        );
+      case "publie":
+        return (
+          <div className="rounded-[28px] border border-dashed border-violet-300 bg-violet-50 p-5 text-center">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-violet-600">Défi du jour</p>
+            <h3 className="mt-3 text-2xl font-black text-slate-900">Publie ta meilleure photo</h3>
+            <p className="mt-2 text-sm text-slate-600">Tu as 1h pour envoyer ta meilleure prise et récolter des points.</p>
+            <Link href="/camera" className="mt-5 inline-flex rounded-full bg-slate-900 px-5 py-3 text-sm font-bold text-white hover:bg-slate-800">
+              + Publier maintenant
+            </Link>
+          </div>
+        );
+      default:
+        return null;
+    }
+  };
+
   return (
     <AppShell>
       <div className="space-y-8 pb-10">
@@ -43,6 +136,40 @@ export default function HomePage() {
               <StatPill label="Défis" value="18" accent="coral" />
               <StatPill label="Streak" value="9 jours" accent="emerald" />
             </div>
+          </div>
+        </section>
+
+        <section className="space-y-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-violet-600">Explore</p>
+              <h2 className="mt-2 text-2xl font-black text-slate-900">Catégories</h2>
+            </div>
+            <Link href="/challenge" className="text-sm font-semibold text-violet-600 hover:text-violet-700">
+              Voir tout
+            </Link>
+          </div>
+
+          <div className="rounded-[28px] border border-slate-200 bg-white p-4 shadow-soft">
+            <div className="flex gap-2 overflow-x-auto pb-2">
+              {categories.map((category) => (
+                <button
+                  key={category.id}
+                  type="button"
+                  onClick={() => setActiveCategory(category.id)}
+                  className={`flex items-center gap-2 whitespace-nowrap rounded-full border px-4 py-2.5 text-sm font-semibold transition-all ${
+                    activeCategory === category.id
+                      ? `border-transparent bg-gradient-to-r ${category.accent} text-white shadow-lg shadow-violet-200`
+                      : "border-slate-200 bg-slate-50 text-slate-600 hover:bg-slate-100"
+                  }`}
+                >
+                  <span>{category.icon}</span>
+                  {category.label}
+                </button>
+              ))}
+            </div>
+
+            <div className="mt-5">{renderCategoryContent()}</div>
           </div>
         </section>
 
