@@ -104,7 +104,7 @@ export default function HomePage() {
 
   return (
     <AppShell>
-      <div className="space-y-8 pb-10">
+      <div className="space-y-8 pb-24 md:pb-10">
         <section className="rounded-[34px] border border-violet-500/20 bg-slate-950 p-5 text-white shadow-[0_25px_60px_rgba(76,29,149,0.35)] md:p-8">
           <div className="flex flex-col gap-6 xl:flex-row xl:items-center xl:justify-between">
             <div className="max-w-xl space-y-5">
