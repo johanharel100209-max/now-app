@@ -1,13 +1,13 @@
-"use client";
+'use client';
 
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { AppShell } from "@/components/app-shell";
 import { ChallengeCard } from "@/components/challenge-card";
 import { FeedCard } from "@/components/feed-card";
 import { FriendCard } from "@/components/friend-card";
 import { StatPill } from "@/components/stat-pill";
-import { challengeCards, feedPosts, friends, leaderboard } from "@/lib/mock-data";
+import { ensureSeedData, getCurrentUser, getFeedPosts, getUsers } from "@/lib/social-store";
 
 const categories = [
   { id: "points", label: "Points", icon: "⚡", accent: "from-violet-600 to-fuchsia-500" },
@@ -24,8 +24,73 @@ const discussionThreads = [
   { user: "Rayan", text: "Qui a le meilleur concept du moment ?", time: "31 min" },
 ];
 
+const challengeCards = [
+  {
+    title: "Quelque chose de rouge",
+    description: "Trouve un objet rouge et captures-le dans le moment le plus spontané possible.",
+    points: 120,
+    scope: "National",
+    timeLeft: "2h 13m",
+    emoji: "🔴",
+  },
+  {
+    title: "Mélange absurde",
+    description: "Prenez une photo qui mélange un objet du quotidien avec une tenue totalement improbable.",
+    points: 150,
+    scope: "Monde",
+    timeLeft: "5h 40m",
+    emoji: "🧢",
+  },
+  {
+    title: "Le meilleur mème",
+    description: "Crée un moment hilarant en photo qui ferait rire toute ta famille en 3 secondes.",
+    points: 200,
+    scope: "Amis",
+    timeLeft: "1h 10m",
+    emoji: "😂",
+  },
+  {
+    title: "Mon lieu préféré",
+    description: "Montre un endroit qui te ressemble le plus et qui raconte une histoire.",
+    points: 90,
+    scope: "Ville",
+    timeLeft: "3h 45m",
+    emoji: "📍",
+  },
+];
+
 export default function HomePage() {
   const [activeCategory, setActiveCategory] = useState("points");
+  const [users, setUsers] = useState<any[]>([]);
+  const [posts, setPosts] = useState<any[]>([]);
+  const [currentUser, setCurrentUser] = useState<any>(null);
+
+  useEffect(() => {
+    ensureSeedData();
+    setUsers(getUsers());
+    setPosts(getFeedPosts());
+    setCurrentUser(getCurrentUser());
+  }, []);
+
+  const leaderboard = useMemo(() => {
+    return [...users]
+      .sort((a, b) => b.points - a.points)
+      .slice(0, 4)
+      .map((u, index) => ({
+        name: u.fullName.split(" ")[0],
+        points: u.points,
+        badge: index === 0 ? "Master du rouge" : index === 1 ? "Mème king" : index === 2 ? "Challenge queen" : "Streak",
+      }));
+  }, [users]);
+
+  const friends = useMemo(() => {
+    return users.slice(0, 4).map((user) => ({
+      name: user.fullName.split(" ")[0],
+      badge: user.city,
+      points: user.points,
+      streak: `${user.streak} jours`,
+    }));
+  }, [users]);
 
   const renderCategoryContent = () => {
     switch (activeCategory) {
@@ -34,18 +99,18 @@ export default function HomePage() {
           <div className="grid gap-4 md:grid-cols-3">
             <div className="rounded-[24px] bg-slate-900 p-5 text-white shadow-[0_18px_45px_rgba(15,23,42,0.18)]">
               <p className="text-[10px] uppercase tracking-[0.22em] text-violet-200">Score total</p>
-              <p className="mt-3 text-3xl font-black">2 480</p>
+              <p className="mt-3 text-3xl font-black">{currentUser?.points ?? 2480}</p>
               <p className="mt-2 text-sm text-slate-300">+180 aujourd’hui</p>
             </div>
             <div className="rounded-[24px] border border-slate-200 bg-white p-5 shadow-[0_18px_45px_rgba(15,23,42,0.04)]">
               <p className="text-[10px] uppercase tracking-[0.22em] text-slate-400">Badge</p>
               <p className="mt-3 text-2xl font-black text-slate-900">Master rouge</p>
-              <p className="mt-2 text-sm text-slate-500">10 badges actifs</p>
+              <p className="mt-2 text-sm text-slate-500">{users.length * 3} badges actifs</p>
             </div>
             <div className="rounded-[24px] bg-gradient-to-br from-violet-600 via-pink-500 to-orange-400 p-[1px] shadow-[0_18px_45px_rgba(168,85,247,0.25)]">
               <div className="h-full rounded-[23px] bg-slate-950/90 p-5 text-white">
                 <p className="text-[10px] uppercase tracking-[0.22em] text-violet-200">Streak</p>
-                <p className="mt-3 text-3xl font-black">9 jours</p>
+                <p className="mt-3 text-3xl font-black">{currentUser?.streak ?? 9} jours</p>
                 <p className="mt-2 text-sm text-slate-300">Tu es dans le top 5</p>
               </div>
             </div>
@@ -132,9 +197,9 @@ export default function HomePage() {
             </div>
 
             <div className="grid w-full max-w-lg gap-3 sm:grid-cols-3">
-              <StatPill label="Points" value="2,480" accent="violet" />
+              <StatPill label="Points" value={String(currentUser?.points ?? 2480)} accent="violet" />
               <StatPill label="Défis" value="18" accent="coral" />
-              <StatPill label="Streak" value="9 jours" accent="emerald" />
+              <StatPill label="Streak" value={`${currentUser?.streak ?? 9} jours`} accent="emerald" />
             </div>
           </div>
         </section>
@@ -185,21 +250,19 @@ export default function HomePage() {
           </div>
 
           <div className="flex gap-3 overflow-x-auto pb-2">
-            {[
-              { name: "Toi", tone: "from-violet-500 to-pink-500" },
-              { name: "Lina", tone: "from-amber-400 to-orange-500" },
-              { name: "Milo", tone: "from-cyan-500 to-blue-500" },
-              { name: "Zoé", tone: "from-emerald-400 to-teal-500" },
-              { name: "Rayan", tone: "from-fuchsia-500 to-pink-500" },
-              { name: "Nina", tone: "from-rose-500 to-red-500" },
-            ].map((friend) => (
-              <div key={friend.name} className="min-w-[88px] text-center">
-                <div className={`mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-gradient-to-br ${friend.tone} p-[2px]`}>
+            {users.slice(0, 6).map((user) => (
+              <div key={user.id} className="min-w-[88px] text-center">
+                <div className={`mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-gradient-to-br ${user.avatarColor} p-[2px]`}>
                   <div className="flex h-full w-full items-center justify-center rounded-full bg-slate-950 text-lg font-black text-white">
-                    {friend.name === "Toi" ? "TO" : friend.name.slice(0, 2).toUpperCase()}
+                    {user.fullName
+                      .split(" ")
+                      .slice(0, 2)
+                      .map((part: string) => part[0])
+                      .join("")
+                      .toUpperCase()}
                   </div>
                 </div>
-                <p className="mt-2 text-xs font-medium text-slate-600">{friend.name}</p>
+                <p className="mt-2 text-xs font-medium text-slate-600">{user.fullName.split(" ")[0]}</p>
               </div>
             ))}
           </div>
@@ -229,7 +292,7 @@ export default function HomePage() {
             </div>
             <div className="space-y-3">
               {leaderboard.map((item, index) => (
-                <div key={item.name} className="flex items-center justify-between rounded-2xl bg-slate-50 p-3">
+                <div key={`${item.name}-${index}`} className="flex items-center justify-between rounded-2xl bg-slate-50 p-3">
                   <div className="flex items-center gap-3">
                     <div className="flex h-9 w-9 items-center justify-center rounded-full bg-slate-900 text-[10px] font-black text-white">
                       #{index + 1}
@@ -258,8 +321,19 @@ export default function HomePage() {
           </div>
 
           <div className="grid gap-5 lg:grid-cols-3">
-            {feedPosts.map((post) => (
-              <FeedCard key={post.id} {...post} />
+            {posts.map((post) => (
+              <FeedCard
+                key={post.id}
+                id={post.id}
+                user={post.userName}
+                handle={post.userHandle}
+                location={post.location}
+                points={post.points}
+                caption={post.caption}
+                image={post.image}
+                likes={post.likes}
+                comments={post.comments}
+              />
             ))}
           </div>
         </section>

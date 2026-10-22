@@ -1,120 +1,176 @@
-'use client';
+"use client";
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
-import { useState } from "react";
 import { AppShell } from "@/components/app-shell";
-import { supabase } from "@/lib/supabase";
+import { buildProfileSummary, createPost, getCurrentUser, getCurrentUserPosts, getFeedPosts } from "@/lib/social-store";
 
-export default function LoginPage() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(false);
+export default function CameraPage() {
+  const [caption, setCaption] = useState("");
+  const [location, setLocation] = useState("Paris");
+  const [category, setCategory] = useState("points");
+  const [image, setImage] = useState(
+    "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=1200&q=80",
+  );
+  const [user, setUser] = useState<any>(null);
+  const [posts, setPosts] = useState<any[]>([]);
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
 
-  const handleSignIn = async () => {
-    setLoading(true);
-    setError("");
-    setMessage("");
-
-    try {
-      const { error } = await supabase.auth.signInWithPassword({ email, password });
-
-      if (error) throw error;
-
-      setMessage("Connexion réussie !");
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Une erreur est survenue.");
-    } finally {
-      setLoading(false);
+  useEffect(() => {
+    const current = getCurrentUser();
+    if (!current) {
+      window.location.href = "/login";
+      return;
     }
+    setUser(current);
+    setPosts(getCurrentUserPosts());
+  }, []);
+
+  const handlePublish = () => {
+    if (!user) {
+      setError("Connecte-toi avant de publier.");
+      return;
+    }
+
+    if (!caption.trim()) {
+      setError("Ajoute une légende à ta photo.");
+      return;
+    }
+
+    createPost({
+      userId: user.id,
+      caption,
+      image,
+      category,
+      location,
+    });
+
+    setMessage("Photo publiée avec succès !");
+    setCaption("");
+    setPosts(getFeedPosts());
   };
 
-  const handleSignUp = async () => {
-    setLoading(true);
-    setError("");
-    setMessage("");
-
-    try {
-      const { data, error } = await supabase.auth.signUp({
-        email,
-        password,
-      });
-
-      if (error) throw error;
-
-      if (data.user) {
-        setMessage("Compte créé ! Vérifie ton email pour confirmer l'inscription.");
-      }
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Impossible de créer le compte.");
-    } finally {
-      setLoading(false);
-    }
-  };
+  const profileSummary = buildProfileSummary(user);
 
   return (
     <AppShell>
-      <div className="mx-auto max-w-md rounded-[32px] border border-slate-200 bg-white p-6 shadow-soft">
-        <div className="mb-6 text-center">
-          <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-[22px] bg-gradient-to-br from-violet-600 via-pink-500 to-orange-400 text-2xl font-black text-white">
-            N
+      <div className="mx-auto max-w-5xl space-y-6">
+        <div className="rounded-[30px] bg-slate-950 p-6 text-white shadow-soft">
+          <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+            <div className="flex items-center gap-4">
+              <div className="flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-violet-500 via-pink-500 to-orange-400 text-xl font-black text-white">
+                {profileSummary?.initials ?? "TO"}
+              </div>
+              <div>
+                <p className="text-[11px] uppercase tracking-[0.22em] text-violet-200">Profil</p>
+                <h1 className="mt-1 text-3xl font-black">{user?.fullName ?? "Ton profil"}</h1>
+                <p className="text-sm text-slate-300">{user?.username ?? "@user.now"} • {user?.points ?? 0} points</p>
+              </div>
+            </div>
+            <Link href="/" className="rounded-full bg-white px-4 py-2.5 text-sm font-semibold text-slate-900 hover:bg-violet-50">
+              Retour au feed
+            </Link>
           </div>
-          <p className="text-[11px] uppercase tracking-[0.22em] text-violet-600">NOW</p>
-          <h1 className="mt-2 text-3xl font-black text-slate-900">Connexion</h1>
         </div>
 
-        <div className="space-y-4">
-          <div className="rounded-2xl border border-slate-200 bg-slate-50 p-3">
-            <label className="mb-2 block text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">Email</label>
-            <input
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="w-full bg-transparent text-sm text-slate-900 outline-none"
-              placeholder="tu@now.app"
-            />
+        <div className="grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
+          <div className="rounded-[30px] border border-slate-200 bg-white p-5 shadow-soft">
+            <h2 className="text-2xl font-black text-slate-900">Publier une photo</h2>
+
+            <div className="mt-5 space-y-4">
+              <div className="overflow-hidden rounded-[26px] border border-slate-200">
+                <img src={image} alt="Preview" className="h-80 w-full object-cover" />
+              </div>
+
+              <div className="rounded-2xl border border-slate-200 bg-slate-50 p-3">
+                <label className="mb-2 block text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">URL image</label>
+                <input
+                  value={image}
+                  onChange={(e) => setImage(e.target.value)}
+                  className="w-full bg-transparent text-sm text-slate-900 outline-none"
+                  placeholder="https://..."
+                />
+              </div>
+
+              <div className="rounded-2xl border border-slate-200 bg-slate-50 p-3">
+                <label className="mb-2 block text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">Légende</label>
+                <textarea
+                  value={caption}
+                  onChange={(e) => setCaption(e.target.value)}
+                  rows={4}
+                  className="w-full resize-none bg-transparent text-sm text-slate-900 outline-none"
+                  placeholder="Décris ton moment..."
+                />
+              </div>
+
+              <div className="grid gap-4 sm:grid-cols-2">
+                <div className="rounded-2xl border border-slate-200 bg-slate-50 p-3">
+                  <label className="mb-2 block text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">Ville</label>
+                  <input
+                    value={location}
+                    onChange={(e) => setLocation(e.target.value)}
+                    className="w-full bg-transparent text-sm text-slate-900 outline-none"
+                  />
+                </div>
+
+                <div className="rounded-2xl border border-slate-200 bg-slate-50 p-3">
+                  <label className="mb-2 block text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">Catégorie</label>
+                  <select
+                    value={category}
+                    onChange={(e) => setCategory(e.target.value)}
+                    className="w-full bg-transparent text-sm text-slate-900 outline-none"
+                  >
+                    <option value="points">Points</option>
+                    <option value="challenge">Challenge</option>
+                    <option value="discussion">Discussion</option>
+                    <option value="amis">Amis</option>
+                    <option value="publie">Publie</option>
+                  </select>
+                </div>
+              </div>
+
+              {error && <div className="rounded-2xl bg-rose-50 px-3 py-2 text-sm font-medium text-rose-700">{error}</div>}
+              {message && <div className="rounded-2xl bg-emerald-50 px-3 py-2 text-sm font-medium text-emerald-700">{message}</div>}
+
+              <button
+                onClick={handlePublish}
+                className="w-full rounded-full bg-violet-600 px-5 py-3 text-sm font-bold text-white hover:bg-violet-500"
+              >
+                Publier ma photo
+              </button>
+            </div>
           </div>
 
-          <div className="rounded-2xl border border-slate-200 bg-slate-50 p-3">
-            <label className="mb-2 block text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">Mot de passe</label>
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="w-full bg-transparent text-sm text-slate-900 outline-none"
-              placeholder="••••••••"
-            />
+          <div className="space-y-6">
+            <div className="rounded-[28px] border border-slate-200 bg-white p-5 shadow-soft">
+              <h3 className="text-xl font-black text-slate-900">Statut du profil</h3>
+              <div className="mt-4 grid gap-3">
+                <div className="rounded-2xl bg-slate-50 p-3">
+                  <p className="text-xs uppercase tracking-[0.18em] text-slate-400">Niveau</p>
+                  <p className="mt-2 text-2xl font-black text-slate-900">{profileSummary?.level ?? "Nouveau"}</p>
+                </div>
+                <div className="rounded-2xl bg-slate-50 p-3">
+                  <p className="text-xs uppercase tracking-[0.18em] text-slate-400">Photos</p>
+                  <p className="mt-2 text-2xl font-black text-slate-900">{posts.length}</p>
+                </div>
+                <div className="rounded-2xl bg-slate-50 p-3">
+                  <p className="text-xs uppercase tracking-[0.18em] text-slate-400">Série</p>
+                  <p className="mt-2 text-2xl font-black text-slate-900">{user?.streak ?? 1} jours</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="rounded-[28px] border border-slate-200 bg-white p-5 shadow-soft">
+              <h3 className="text-xl font-black text-slate-900">À venir</h3>
+              <ul className="mt-4 space-y-3 text-sm text-slate-600">
+                <li>• Défis du jour plus poussés</li>
+                <li>• Commentaires en temps réel</li>
+                <li>• Followers et amis</li>
+                <li>• Leaderboard complet</li>
+              </ul>
+            </div>
           </div>
-
-          <div className="grid gap-3 sm:grid-cols-2">
-            <button
-              onClick={handleSignIn}
-              disabled={loading}
-              className="w-full rounded-full bg-slate-900 px-4 py-3 text-sm font-bold text-white hover:bg-slate-800 disabled:opacity-60"
-            >
-              {loading ? "Chargement..." : "Se connecter"}
-            </button>
-
-            <button
-              onClick={handleSignUp}
-              disabled={loading}
-              className="w-full rounded-full bg-violet-600 px-4 py-3 text-sm font-bold text-white hover:bg-violet-500 disabled:opacity-60"
-            >
-              Créer un compte
-            </button>
-          </div>
-
-          {error && (
-            <div className="rounded-2xl bg-rose-50 px-3 py-2 text-sm font-medium text-rose-700">{error}</div>
-          )}
-
-          {message && (
-            <div className="rounded-2xl bg-emerald-50 px-3 py-2 text-sm font-medium text-emerald-700">{message}</div>
-          )}
-
-          <Link href="/" className="block text-center text-sm font-semibold text-violet-600 hover:text-violet-700">
-            Retour au feed
-          </Link>
         </div>
       </div>
     </AppShell>
