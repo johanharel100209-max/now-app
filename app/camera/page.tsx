@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, type ChangeEvent } from "react";
 import Link from "next/link";
 import { AppShell } from "@/components/app-shell";
 import { buildProfileSummary, createPost, getCurrentUser, getCurrentUserPosts, getFeedPosts } from "@/lib/social-store";
@@ -26,6 +26,27 @@ export default function CameraPage() {
     setUser(current);
     setPosts(getCurrentUserPosts());
   }, []);
+
+  const handleImageSelection = (event: ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    if (!file.type.startsWith("image/")) {
+      setError("Le fichier sélectionné n'est pas une image.");
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      const result = typeof reader.result === "string" ? reader.result : "";
+      if (result) {
+        setImage(result);
+        setError("");
+        setMessage("Photo prête à être publiée.");
+      }
+    };
+    reader.readAsDataURL(file);
+  };
 
   const handlePublish = () => {
     if (!user) {
@@ -83,10 +104,30 @@ export default function CameraPage() {
                 <img src={image} alt="Preview" className="h-80 w-full object-cover" />
               </div>
 
+              <div className="flex flex-col gap-3 sm:flex-row">
+                <label className="flex cursor-pointer items-center justify-center rounded-full bg-violet-600 px-4 py-3 text-sm font-bold text-white shadow-sm transition hover:bg-violet-500">
+                  <span>Prendre une photo</span>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    capture="environment"
+                    onChange={handleImageSelection}
+                    className="hidden"
+                  />
+                </label>
+
+                <label className="flex cursor-pointer items-center justify-center rounded-full border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-bold text-slate-700 transition hover:bg-slate-100">
+                  <span>Choisir une image</span>
+                  <input type="file" accept="image/*" onChange={handleImageSelection} className="hidden" />
+                </label>
+              </div>
+
               <div className="rounded-2xl border border-slate-200 bg-slate-50 p-3">
-                <label className="mb-2 block text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">URL image</label>
+                <label className="mb-2 block text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">
+                  URL image
+                </label>
                 <input
-                  value={image}
+                  value={image.startsWith("data:image") ? "" : image}
                   onChange={(e) => setImage(e.target.value)}
                   className="w-full bg-transparent text-sm text-slate-900 outline-none"
                   placeholder="https://..."
@@ -94,7 +135,9 @@ export default function CameraPage() {
               </div>
 
               <div className="rounded-2xl border border-slate-200 bg-slate-50 p-3">
-                <label className="mb-2 block text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">Légende</label>
+                <label className="mb-2 block text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">
+                  Légende
+                </label>
                 <textarea
                   value={caption}
                   onChange={(e) => setCaption(e.target.value)}
@@ -106,7 +149,9 @@ export default function CameraPage() {
 
               <div className="grid gap-4 sm:grid-cols-2">
                 <div className="rounded-2xl border border-slate-200 bg-slate-50 p-3">
-                  <label className="mb-2 block text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">Ville</label>
+                  <label className="mb-2 block text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">
+                    Ville
+                  </label>
                   <input
                     value={location}
                     onChange={(e) => setLocation(e.target.value)}
@@ -115,7 +160,9 @@ export default function CameraPage() {
                 </div>
 
                 <div className="rounded-2xl border border-slate-200 bg-slate-50 p-3">
-                  <label className="mb-2 block text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">Catégorie</label>
+                  <label className="mb-2 block text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">
+                    Catégorie
+                  </label>
                   <select
                     value={category}
                     onChange={(e) => setCategory(e.target.value)}
