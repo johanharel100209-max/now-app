@@ -13,7 +13,7 @@ type FeedCardProps = {
 
 export function FeedCard({ user, handle, location, points, caption, image, likes, comments, mediaType = "image" }: FeedCardProps) {
   return (
-    <article className="overflow-hidden rounded-[30px] border border-slate-200 bg-white shadow-soft">
+    <article className="overflow-hidden rounded-[30px] border border-slate-200 bg-white shadow-[0_20px_45px_rgba(15,23,42,0.05)] transition hover:-translate-y-1 hover:shadow-[0_28px_60px_rgba(15,23,42,0.10)]">
       <div className="flex items-center justify-between border-b border-slate-100 p-4">
         <div className="flex items-center gap-3">
           <div className="flex h-11 w-11 items-center justify-center rounded-full bg-gradient-to-br from-violet-500 to-pink-500 text-sm font-black text-white">
