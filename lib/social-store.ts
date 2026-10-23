@@ -12,6 +12,8 @@ export type UserProfile = {
   createdAt: string;
 };
 
+export type MediaType = "image" | "video";
+
 export type PostItem = {
   id: string;
   userId: string;
@@ -21,6 +23,10 @@ export type PostItem = {
   caption: string;
   image: string;
   category: string;
+  mediaType?: MediaType;
+  country?: string;
+  theme?: string;
+  trendScore?: number;
   likes: number;
   comments: number;
   points: number;
@@ -83,7 +89,11 @@ const fallbackPosts: PostItem[] = [
     caption: "Quand tu trouves le rouge parfait au bon moment. #RedAlert #NOW",
     image:
       "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=900&q=80",
-    category: "points",
+    category: "national",
+    mediaType: "image",
+    country: "France",
+    theme: "street",
+    trendScore: 98,
     likes: 1450,
     comments: 98,
     points: 180,
@@ -98,7 +108,11 @@ const fallbackPosts: PostItem[] = [
     caption: "Mon café de la journée + le mème non officiel du challenge.",
     image:
       "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=900&q=80",
-    category: "challenge",
+    category: "international",
+    mediaType: "image",
+    country: "France",
+    theme: "food",
+    trendScore: 94,
     likes: 1980,
     comments: 134,
     points: 210,
@@ -114,9 +128,32 @@ const fallbackPosts: PostItem[] = [
     image:
       "https://images.unsplash.com/photo-1521119989659-a83eee488004?auto=format&fit=crop&w=900&q=80",
     category: "publie",
+    mediaType: "image",
+    country: "France",
+    theme: "danse",
+    trendScore: 90,
     likes: 2770,
     comments: 219,
     points: 260,
+    createdAt: new Date().toISOString(),
+  },
+  {
+    id: "post-4",
+    userId: "user-lina",
+    userName: "Lina Moreau",
+    userHandle: "@lina.now",
+    location: "Tokyo",
+    caption: "Tokyo night energy. Un peu de japonais, un peu de lumière, beaucoup de vibe.",
+    image:
+      "https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?auto=format&fit=crop&w=900&q=80",
+    category: "international",
+    mediaType: "image",
+    country: "Japon",
+    theme: "japonais",
+    trendScore: 97,
+    likes: 984,
+    comments: 52,
+    points: 170,
     createdAt: new Date().toISOString(),
   },
 ];
@@ -239,6 +276,10 @@ export function createPost(input: {
   image: string;
   category: string;
   location: string;
+  mediaType?: MediaType;
+  country?: string;
+  theme?: string;
+  trendScore?: number;
 }) {
   const users = getUsers();
   const user = users.find((item) => item.id === input.userId);
@@ -254,6 +295,10 @@ export function createPost(input: {
     caption: input.caption,
     image: input.image,
     category: input.category,
+    mediaType: input.mediaType ?? "image",
+    country: input.country ?? user.city || "France",
+    theme: input.theme ?? "street",
+    trendScore: input.trendScore ?? 80,
     likes: 0,
     comments: 0,
     points: 100,
@@ -298,3 +343,4 @@ export function buildProfileSummary(user: UserProfile | null) {
     level: user.points >= 2000 ? "Master" : user.points >= 1500 ? "Expert" : "Nouveau",
   };
 }
+

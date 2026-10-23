@@ -9,6 +9,9 @@ export default function CameraPage() {
   const [caption, setCaption] = useState("");
   const [location, setLocation] = useState("Paris");
   const [category, setCategory] = useState("national");
+  const [country, setCountry] = useState("France");
+  const [theme, setTheme] = useState("street");
+  const [mediaType, setMediaType] = useState<"image" | "video">("image");
   const [image, setImage] = useState(
     "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=1200&q=80",
   );
@@ -27,25 +30,23 @@ export default function CameraPage() {
     setPosts(getCurrentUserPosts());
   }, []);
 
-  const handleImageSelection = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleMediaSelection = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file) return;
 
-    if (!file.type.startsWith("image/")) {
-      setError("Le fichier sélectionné n'est pas une image.");
+    const isVideo = file.type.startsWith("video/");
+    const isImage = file.type.startsWith("image/");
+
+    if (!isImage && !isVideo) {
+      setError("Le fichier sélectionné doit être une image ou une vidéo.");
       return;
     }
 
-    const reader = new FileReader();
-    reader.onload = () => {
-      const result = typeof reader.result === "string" ? reader.result : "";
-      if (result) {
-        setImage(result);
-        setError("");
-        setMessage("Photo prête à être publiée.");
-      }
-    };
-    reader.readAsDataURL(file);
+    const objectUrl = URL.createObjectURL(file);
+    setImage(objectUrl);
+    setMediaType(isVideo ? "video" : "image");
+    setError("");
+    setMessage(isVideo ? "Vidéo prête à être publiée." : "Photo prête à être publiée.");
   };
 
   const handlePublish = () => {
@@ -65,9 +66,13 @@ export default function CameraPage() {
       image,
       category,
       location,
+      mediaType,
+      country,
+      theme,
+      trendScore: 90,
     });
 
-    setMessage("Photo publiée avec succès !");
+    setMessage("Contenu publié avec succès !");
     setCaption("");
     setPosts(getFeedPosts());
   };
@@ -97,41 +102,33 @@ export default function CameraPage() {
 
         <div className="grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
           <div className="rounded-[30px] border border-slate-200 bg-white p-5 shadow-soft">
-            <h2 className="text-2xl font-black text-slate-900">Publier une photo</h2>
+            <h2 className="text-2xl font-black text-slate-900">Publier une photo ou vidéo</h2>
 
             <div className="mt-5 space-y-4">
-              <div className="overflow-hidden rounded-[26px] border border-slate-200">
-                <img src={image} alt="Preview" className="h-80 w-full object-cover" />
+              <div className="overflow-hidden rounded-[26px] border border-slate-200 bg-slate-100">
+                {mediaType === "video" ? (
+                  <video src={image} controls className="h-80 w-full object-cover" />
+                ) : (
+                  <img src={image} alt="Preview" className="h-80 w-full object-cover" />
+                )}
               </div>
 
               <div className="flex flex-col gap-3 sm:flex-row">
                 <label className="flex cursor-pointer items-center justify-center rounded-full bg-violet-600 px-4 py-3 text-sm font-bold text-white shadow-sm transition hover:bg-violet-500">
-                  <span>Prendre une photo</span>
+                  <span>Prendre un média</span>
                   <input
                     type="file"
-                    accept="image/*"
+                    accept="image/*,video/*"
                     capture="environment"
-                    onChange={handleImageSelection}
+                    onChange={handleMediaSelection}
                     className="hidden"
                   />
                 </label>
 
                 <label className="flex cursor-pointer items-center justify-center rounded-full border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-bold text-slate-700 transition hover:bg-slate-100">
-                  <span>Choisir une image</span>
-                  <input type="file" accept="image/*" onChange={handleImageSelection} className="hidden" />
+                  <span>Choisir un fichier</span>
+                  <input type="file" accept="image/*,video/*" onChange={handleMediaSelection} className="hidden" />
                 </label>
-              </div>
-
-              <div className="rounded-2xl border border-slate-200 bg-slate-50 p-3">
-                <label className="mb-2 block text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">
-                  URL image
-                </label>
-                <input
-                  value={image.startsWith("data:image") ? "" : image}
-                  onChange={(e) => setImage(e.target.value)}
-                  className="w-full bg-transparent text-sm text-slate-900 outline-none"
-                  placeholder="https://..."
-                />
               </div>
 
               <div className="rounded-2xl border border-slate-200 bg-slate-50 p-3">
@@ -149,9 +146,7 @@ export default function CameraPage() {
 
               <div className="grid gap-4 sm:grid-cols-2">
                 <div className="rounded-2xl border border-slate-200 bg-slate-50 p-3">
-                  <label className="mb-2 block text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">
-                    Ville
-                  </label>
+                  <label className="mb-2 block text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">Ville</label>
                   <input
                     value={location}
                     onChange={(e) => setLocation(e.target.value)}
@@ -160,9 +155,7 @@ export default function CameraPage() {
                 </div>
 
                 <div className="rounded-2xl border border-slate-200 bg-slate-50 p-3">
-                  <label className="mb-2 block text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">
-                    Catégorie du défi
-                  </label>
+                  <label className="mb-2 block text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">Type</label>
                   <select
                     value={category}
                     onChange={(e) => setCategory(e.target.value)}
@@ -179,6 +172,40 @@ export default function CameraPage() {
                 </div>
               </div>
 
+              <div className="grid gap-4 sm:grid-cols-2">
+                <div className="rounded-2xl border border-slate-200 bg-slate-50 p-3">
+                  <label className="mb-2 block text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">Pays</label>
+                  <select
+                    value={country}
+                    onChange={(e) => setCountry(e.target.value)}
+                    className="w-full bg-transparent text-sm text-slate-900 outline-none"
+                  >
+                    <option value="France">France</option>
+                    <option value="Japon">Japon</option>
+                    <option value="Brésil">Brésil</option>
+                    <option value="USA">USA</option>
+                    <option value="Italie">Italie</option>
+                    <option value="Maroc">Maroc</option>
+                  </select>
+                </div>
+
+                <div className="rounded-2xl border border-slate-200 bg-slate-50 p-3">
+                  <label className="mb-2 block text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">Thème</label>
+                  <select
+                    value={theme}
+                    onChange={(e) => setTheme(e.target.value)}
+                    className="w-full bg-transparent text-sm text-slate-900 outline-none"
+                  >
+                    <option value="street">Street</option>
+                    <option value="japonais">Japonais</option>
+                    <option value="danse">Danse</option>
+                    <option value="food">Food</option>
+                    <option value="sport">Sport</option>
+                    <option value="mode">Mode</option>
+                  </select>
+                </div>
+              </div>
+
               {error && <div className="rounded-2xl bg-rose-50 px-3 py-2 text-sm font-medium text-rose-700">{error}</div>}
               {message && <div className="rounded-2xl bg-emerald-50 px-3 py-2 text-sm font-medium text-emerald-700">{message}</div>}
 
@@ -186,7 +213,7 @@ export default function CameraPage() {
                 onClick={handlePublish}
                 className="w-full rounded-full bg-violet-600 px-5 py-3 text-sm font-bold text-white hover:bg-violet-500"
               >
-                Publier ma photo
+                Publier mon média
               </button>
             </div>
           </div>
@@ -200,7 +227,7 @@ export default function CameraPage() {
                   <p className="mt-2 text-2xl font-black text-slate-900">{profileSummary?.level ?? "Nouveau"}</p>
                 </div>
                 <div className="rounded-2xl bg-slate-50 p-3">
-                  <p className="text-xs uppercase tracking-[0.18em] text-slate-400">Photos</p>
+                  <p className="text-xs uppercase tracking-[0.18em] text-slate-400">Photos / vidéos</p>
                   <p className="mt-2 text-2xl font-black text-slate-900">{posts.length}</p>
                 </div>
                 <div className="rounded-2xl bg-slate-50 p-3">

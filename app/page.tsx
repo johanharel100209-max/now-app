@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
@@ -15,6 +15,7 @@ const categories = [
   { id: "discussion", label: "Discussion", icon: "💬", accent: "from-cyan-500 to-blue-500" },
   { id: "amis", label: "Amis", icon: "👥", accent: "from-emerald-500 to-teal-500" },
   { id: "publie", label: "Publie", icon: "📸", accent: "from-pink-500 to-rose-500" },
+  { id: "monde", label: "Monde", icon: "🌍", accent: "from-sky-500 to-indigo-500" },
 ];
 
 const dailyChallenges = [
@@ -221,6 +222,33 @@ export default function HomePage() {
             </Link>
           </div>
         );
+      case "monde":
+        return (
+          <div className="rounded-[28px] border border-violet-200 bg-gradient-to-br from-sky-50 to-indigo-50 p-5 shadow-[0_18px_45px_rgba(59,130,246,0.08)]">
+            <div className="mb-4 flex items-center justify-between gap-3">
+              <div>
+                <p className="text-[10px] uppercase tracking-[0.22em] text-violet-600">Fil mondial</p>
+                <h3 className="mt-2 text-2xl font-black text-slate-900">Tendances du monde</h3>
+              </div>
+              <Link href="/world" className="rounded-full bg-slate-900 px-4 py-2 text-sm font-bold text-white transition hover:bg-slate-800">
+                Ouvrir la carte
+              </Link>
+            </div>
+
+            <div className="grid gap-3 sm:grid-cols-3">
+              {[
+                { country: "France", theme: "Street" },
+                { country: "Japon", theme: "Japonais" },
+                { country: "Brésil", theme: "Danse" },
+              ].map((item) => (
+                <div key={item.country} className="rounded-2xl border border-white/80 bg-white p-4 shadow-sm">
+                  <p className="text-xs uppercase tracking-[0.18em] text-slate-400">{item.country}</p>
+                  <p className="mt-2 text-lg font-black text-slate-900">{item.theme}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        );
       default:
         return null;
     }
@@ -251,6 +279,9 @@ export default function HomePage() {
                 </Link>
                 <Link href="/challenge" className="rounded-full border border-white/15 bg-white/5 px-5 py-3 text-sm font-bold text-white transition hover:bg-white/10">
                   Voir les défis
+                </Link>
+                <Link href="/world" className="rounded-full border border-sky-300 bg-sky-500/15 px-5 py-3 text-sm font-bold text-sky-50 transition hover:bg-sky-500/20">
+                  Voir le monde
                 </Link>
               </div>
             </div>
@@ -392,6 +423,7 @@ export default function HomePage() {
                 image={post.image}
                 likes={post.likes}
                 comments={post.comments}
+                mediaType={post.mediaType}
               />
             ))}
           </div>
