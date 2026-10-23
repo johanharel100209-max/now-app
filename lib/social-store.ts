@@ -296,7 +296,7 @@ export function createPost(input: {
     image: input.image,
     category: input.category,
     mediaType: input.mediaType ?? "image",
-    country: input.country ?? user.city || "France",
+    country: (input.country ?? user.city) || "France",
     theme: input.theme ?? "street",
     trendScore: input.trendScore ?? 80,
     likes: 0,
