@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, type ChangeEvent } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { AppShell } from "@/components/app-shell";
 import { buildProfileSummary, createPost, getCurrentUser, getCurrentUserPosts, getFeedPosts } from "@/lib/social-store";
@@ -8,7 +8,7 @@ import { buildProfileSummary, createPost, getCurrentUser, getCurrentUserPosts, g
 export default function CameraPage() {
   const [caption, setCaption] = useState("");
   const [location, setLocation] = useState("Paris");
-  const [category, setCategory] = useState("points");
+  const [category, setCategory] = useState("national");
   const [image, setImage] = useState(
     "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=1200&q=80",
   );
@@ -27,7 +27,7 @@ export default function CameraPage() {
     setPosts(getCurrentUserPosts());
   }, []);
 
-  const handleImageSelection = (event: ChangeEvent<HTMLInputElement>) => {
+  const handleImageSelection = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file) return;
 
@@ -161,15 +161,17 @@ export default function CameraPage() {
 
                 <div className="rounded-2xl border border-slate-200 bg-slate-50 p-3">
                   <label className="mb-2 block text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">
-                    Catégorie
+                    Catégorie du défi
                   </label>
                   <select
                     value={category}
                     onChange={(e) => setCategory(e.target.value)}
                     className="w-full bg-transparent text-sm text-slate-900 outline-none"
                   >
+                    <option value="national">Défi national du jour</option>
+                    <option value="international">Défi international du jour</option>
+                    <option value="challenge">Challenge général</option>
                     <option value="points">Points</option>
-                    <option value="challenge">Challenge</option>
                     <option value="discussion">Discussion</option>
                     <option value="amis">Amis</option>
                     <option value="publie">Publie</option>
@@ -223,3 +225,4 @@ export default function CameraPage() {
     </AppShell>
   );
 }
+

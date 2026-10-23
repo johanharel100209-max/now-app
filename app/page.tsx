@@ -17,6 +17,29 @@ const categories = [
   { id: "publie", label: "Publie", icon: "📸", accent: "from-pink-500 to-rose-500" },
 ];
 
+const dailyChallenges = [
+  {
+    id: "national",
+    label: "Défi national du jour",
+    title: "Quelque chose de rouge",
+    description: "Trouve un objet rouge et captures-le dans le moment le plus spontané possible.",
+    points: 120,
+    scope: "National",
+    timeLeft: "2h 13m",
+    emoji: "🔴",
+  },
+  {
+    id: "international",
+    label: "Défi international du jour",
+    title: "Mélange absurde",
+    description: "Prenez une photo qui mélange un objet du quotidien avec une tenue totalement improbable.",
+    points: 150,
+    scope: "International",
+    timeLeft: "5h 40m",
+    emoji: "🌍",
+  },
+];
+
 const discussionThreads = [
   { user: "Lina", text: "Le défi rouge est trop fun ce matin 😄", time: "2 min" },
   { user: "Milo", text: "J’ai trouvé la meilleure pose pour le challenge #Meme", time: "9 min" },
@@ -92,6 +115,13 @@ export default function HomePage() {
     }));
   }, [users]);
 
+  const challengeGallery = useMemo(() => {
+    return dailyChallenges.map((challenge) => ({
+      ...challenge,
+      shots: posts.filter((post: any) => post.category === challenge.id).slice(0, 3),
+    }));
+  }, [posts]);
+
   const renderCategoryContent = () => {
     switch (activeCategory) {
       case "points":
@@ -118,9 +148,38 @@ export default function HomePage() {
         );
       case "challenge":
         return (
-          <div className="grid gap-4 md:grid-cols-2">
-            {challengeCards.map((challenge) => (
-              <ChallengeCard key={challenge.title} {...challenge} />
+          <div className="space-y-5">
+            {challengeGallery.map((challenge) => (
+              <div key={challenge.id} className="overflow-hidden rounded-[28px] border border-slate-200 bg-white shadow-[0_18px_45px_rgba(15,23,42,0.04)]">
+                <div className="flex items-center justify-between bg-gradient-to-br from-violet-500 via-pink-500 to-orange-400 p-4 text-white">
+                  <div>
+                    <p className="text-[10px] uppercase tracking-[0.22em] text-violet-100">{challenge.label}</p>
+                    <h3 className="mt-2 text-xl font-black">{challenge.title}</h3>
+                  </div>
+                  <span className="rounded-full bg-white/15 px-2.5 py-1 text-sm font-bold">+{challenge.points} pts</span>
+                </div>
+
+                <div className="space-y-4 p-4">
+                  <p className="text-sm leading-6 text-slate-600">{challenge.description}</p>
+
+                  <div className="grid gap-2 sm:grid-cols-3">
+                    {challenge.shots.length > 0 ? (
+                      challenge.shots.map((post: any) => (
+                        <img
+                          key={post.id}
+                          src={post.image}
+                          alt={post.caption}
+                          className="h-24 w-full rounded-2xl object-cover"
+                        />
+                      ))
+                    ) : (
+                      <div className="col-span-3 rounded-2xl border border-dashed border-slate-300 bg-slate-50 p-3 text-sm text-slate-500">
+                        Aucune photo publiée pour ce défi pour le moment.
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
             ))}
           </div>
         );
@@ -355,3 +414,4 @@ export default function HomePage() {
     </AppShell>
   );
 }
+

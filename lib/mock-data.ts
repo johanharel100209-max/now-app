@@ -1,6 +1,7 @@
 export const challengeCards = [
   {
-    title: "Quelque chose de rouge",
+    id: "national",
+    title: "Défi national du jour",
     description: "Trouve un objet rouge et captures-le dans le moment le plus spontané possible.",
     points: 120,
     scope: "National",
@@ -8,14 +9,16 @@ export const challengeCards = [
     emoji: "🔴",
   },
   {
-    title: "Mélange absurde",
-    description: "Prenez une photo qui mélange un objet du quotidien avec une tenue totalement improbable.",
+    id: "international",
+    title: "Défi international du jour",
+    description: "Participe à un défi mondial avec une idée créative, absurde et ultra visuelle.",
     points: 150,
-    scope: "Monde",
+    scope: "International",
     timeLeft: "5h 40m",
-    emoji: "🧢",
+    emoji: "🌍",
   },
   {
+    id: "challenge",
     title: "Le meilleur mème",
     description: "Crée un moment hilarant en photo qui ferait rire toute ta famille en 3 secondes.",
     points: 200,
@@ -24,6 +27,7 @@ export const challengeCards = [
     emoji: "😂",
   },
   {
+    id: "ville",
     title: "Mon lieu préféré",
     description: "Montre un endroit qui te ressemble le plus et qui raconte une histoire.",
     points: 90,
@@ -85,3 +89,4 @@ export const friends = [
   { name: "Zoé", badge: "Viral", points: 1920, streak: "9 jours" },
   { name: "Rayan", badge: "Voyage", points: 1605, streak: "6 jours" },
 ];
+
