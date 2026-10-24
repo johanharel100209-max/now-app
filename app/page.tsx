@@ -15,6 +15,15 @@ const categories = [
   { id: "amis", label: "Amis", icon: "👥" },
 ];
 
+const worldPins = [
+  { country: "France", x: 50, y: 38, count: 12 },
+  { country: "Japon", x: 82, y: 33, count: 9 },
+  { country: "Brésil", x: 34, y: 72, count: 7 },
+  { country: "USA", x: 20, y: 41, count: 11 },
+  { country: "Maroc", x: 48, y: 52, count: 6 },
+  { country: "Australie", x: 86, y: 76, count: 8 },
+];
+
 export default function HomePage() {
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [posts, setPosts] = useState<any[]>([]);
@@ -38,7 +47,7 @@ export default function HomePage() {
     <AppShell>
       <div className="space-y-8 pb-10">
         <section className="relative overflow-hidden rounded-[36px] border border-violet-500/20 bg-slate-950 p-6 shadow-[0_30px_80px_rgba(76,29,149,0.35)] md:p-8">
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(168,85,247,0.30),transparent_30%),radial-gradient(circle_at_bottom_right,rgba(59,130,246,0.20),transparent_32%)]" />
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(168,85,247,0.30),transparent_30%),radial-gradient(circle_at_bottom_right,rgba(59,130,246,0.20),transparent_32%),linear-gradient(135deg,#0f172a,#111827_42%,#1e1b4b)]" />
           <div className="relative grid gap-6 xl:grid-cols-[1.4fr_0.8fr] xl:items-end">
             <div className="space-y-5">
               <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[0.22em] text-violet-100">
@@ -127,44 +136,111 @@ export default function HomePage() {
               ))}
             </div>
 
-            <div className="mt-5 grid gap-4 lg:grid-cols-[1.2fr_0.8fr]">
-              <div className="space-y-4">
-                <div className="rounded-[28px] bg-gradient-to-br from-violet-500 via-pink-500 to-orange-400 p-5 text-white shadow-[0_20px_40px_rgba(168,85,247,0.25)]">
-                  <p className="text-[10px] uppercase tracking-[0.22em] text-violet-100">Défi du jour</p>
-                  <h3 className="mt-3 text-2xl font-black">{challengeCards[0].title}</h3>
-                  <p className="mt-2 text-sm text-violet-50">{challengeCards[0].description}</p>
-                  <div className="mt-4 flex items-center justify-between text-sm">
-                    <span className="rounded-full bg-white/15 px-2.5 py-1">{challengeCards[0].scope}</span>
-                    <span className="font-bold">+{challengeCards[0].points} pts</span>
+            {selectedCategory === "monde" && (
+              <div className="mt-5 grid gap-5 xl:grid-cols-[1.2fr_0.8fr]">
+                <div className="overflow-hidden rounded-[28px] border border-slate-200 bg-gradient-to-br from-sky-100 via-indigo-50 to-violet-50 p-4">
+                  <div className="mb-3 flex items-center justify-between">
+                    <div>
+                      <p className="text-[10px] uppercase tracking-[0.2em] text-sky-600">Carte mondiale</p>
+                      <h3 className="mt-2 text-xl font-black text-slate-900">Défis live partout</h3>
+                    </div>
+                    <span className="rounded-full bg-white/80 px-3 py-1 text-xs font-bold text-sky-700">12 pays</span>
+                  </div>
+
+                  <div className="relative h-[320px] w-full overflow-hidden rounded-[24px] bg-[radial-gradient(circle_at_20%_20%,rgba(59,130,246,0.18),transparent_23%),radial-gradient(circle_at_70%_30%,rgba(168,85,247,0.18),transparent_25%),linear-gradient(135deg,#dbeafe,#eef2ff_40%,#f5f3ff)]">
+                    <div className="absolute inset-0 opacity-30">
+                      <svg viewBox="0 0 100 100" className="h-full w-full" aria-hidden="true">
+                        <path d="M16 28L28 22L34 19L39 22L44 18L51 21L58 18L63 22L70 28L73 33L67 39L62 44L58 52L50 58L42 55L35 48L24 40L18 32Z" fill="rgba(148,163,184,0.75)" />
+                        <path d="M70 33L76 31L82 35L86 40L84 46L78 49L71 47L68 42L70 33Z" fill="rgba(148,163,184,0.75)" />
+                        <path d="M36 60L44 68L51 76L48 84L39 80L29 69L31 63Z" fill="rgba(148,163,184,0.75)" />
+                        <path d="M76 68L84 72L90 79L86 87L79 83L73 76Z" fill="rgba(148,163,184,0.75)" />
+                      </svg>
+                    </div>
+
+                    {worldPins.map((pin) => (
+                      <div
+                        key={pin.country}
+                        className="absolute -translate-x-1/2 -translate-y-1/2"
+                        style={{ left: `${pin.x}%`, top: `${pin.y}%` }}
+                      >
+                        <div className="flex -translate-y-3 flex-col items-center gap-1">
+                          <span className="rounded-full border-2 border-white bg-violet-600 px-2 py-1 text-[10px] font-black text-white shadow-lg">
+                            {pin.count}
+                          </span>
+                          <span className="rounded-full bg-white/90 px-2 py-1 text-[10px] font-bold text-slate-700 shadow-sm">
+                            {pin.country}
+                          </span>
+                        </div>
+                      </div>
+                    ))}
                   </div>
                 </div>
 
-                <div className="grid gap-3 md:grid-cols-3">
-                  {featuredPosts.map((post) => (
-                    <div key={post.id} className="overflow-hidden rounded-[22px] border border-slate-200 bg-white">
-                      <img src={post.image} alt={post.caption} className="h-28 w-full object-cover" />
+                <div className="space-y-3">
+                  {challengeCards.map((challenge) => (
+                    <Link
+                      key={challenge.id}
+                      href="/challenge"
+                      className="block rounded-[24px] border border-slate-200 bg-white p-4 shadow-[0_16px_30px_rgba(15,23,42,0.04)] transition hover:-translate-y-0.5 hover:border-violet-300"
+                    >
+                      <div className="flex items-center justify-between">
+                        <span className="rounded-full bg-violet-100 px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.16em] text-violet-700">
+                          {challenge.scope}
+                        </span>
+                        <span className="text-sm font-black text-violet-700">+{challenge.points}</span>
+                      </div>
+                      <h4 className="mt-3 text-lg font-black text-slate-900">{challenge.title}</h4>
+                      <p className="mt-2 text-sm leading-6 text-slate-600">{challenge.description}</p>
+                      <div className="mt-3 flex items-center justify-between text-xs font-semibold uppercase tracking-[0.14em] text-slate-400">
+                        <span>{challenge.emoji}</span>
+                        <span>{challenge.timeLeft}</span>
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {selectedCategory !== "monde" && (
+              <div className="mt-5 grid gap-4 lg:grid-cols-[1.2fr_0.8fr]">
+                <div className="space-y-4">
+                  <div className="rounded-[28px] bg-gradient-to-br from-violet-500 via-pink-500 to-orange-400 p-5 text-white shadow-[0_20px_40px_rgba(168,85,247,0.25)]">
+                    <p className="text-[10px] uppercase tracking-[0.22em] text-violet-100">Défi du jour</p>
+                    <h3 className="mt-3 text-2xl font-black">{challengeCards[0].title}</h3>
+                    <p className="mt-2 text-sm text-violet-50">{challengeCards[0].description}</p>
+                    <div className="mt-4 flex items-center justify-between text-sm">
+                      <span className="rounded-full bg-white/15 px-2.5 py-1">{challengeCards[0].scope}</span>
+                      <span className="font-bold">+{challengeCards[0].points} pts</span>
+                    </div>
+                  </div>
+
+                  <div className="grid gap-3 md:grid-cols-3">
+                    {featuredPosts.map((post) => (
+                      <div key={post.id} className="overflow-hidden rounded-[22px] border border-slate-200 bg-white">
+                        <img src={post.image} alt={post.caption} className="h-28 w-full object-cover" />
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="space-y-3">
+                  {leaderboard.map((user, index) => (
+                    <div key={user.id} className="flex items-center justify-between rounded-[24px] border border-slate-200 bg-slate-50 p-3">
+                      <div className="flex items-center gap-3">
+                        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-slate-900 text-[10px] font-black text-white">
+                          #{index + 1}
+                        </div>
+                        <div>
+                          <p className="font-bold text-slate-900">{user.fullName.split(" ")[0]}</p>
+                          <p className="text-[10px] uppercase tracking-[0.18em] text-slate-400">{index === 0 ? "Master" : index === 1 ? "Viral" : "Streak"}</p>
+                        </div>
+                      </div>
+                      <span className="text-sm font-black text-slate-900">{user.points}</span>
                     </div>
                   ))}
                 </div>
               </div>
-
-              <div className="space-y-3">
-                {leaderboard.map((user, index) => (
-                  <div key={user.id} className="flex items-center justify-between rounded-[24px] border border-slate-200 bg-slate-50 p-3">
-                    <div className="flex items-center gap-3">
-                      <div className="flex h-10 w-10 items-center justify-center rounded-full bg-slate-900 text-[10px] font-black text-white">
-                        #{index + 1}
-                      </div>
-                      <div>
-                        <p className="font-bold text-slate-900">{user.fullName.split(" ")[0]}</p>
-                        <p className="text-[10px] uppercase tracking-[0.18em] text-slate-400">{index === 0 ? "Master" : index === 1 ? "Viral" : "Streak"}</p>
-                      </div>
-                    </div>
-                    <span className="text-sm font-black text-slate-900">{user.points}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
+            )}
           </div>
         </section>
 
@@ -269,4 +345,3 @@ export default function HomePage() {
     </AppShell>
   );
 }
-
